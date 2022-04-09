@@ -1,0 +1,31 @@
+LINK: https://github.com/lauripalonen/csb_project
+installation instructions
+
+FLAW 1:
+link:
+description:
+how to fix:
+
+
+FLAW 2:
+link:
+description:
+how to fix:
+
+
+FLAW 3:
+link:
+description:
+how to fix:
+
+
+FLAW 4:
+link:
+description:
+how to fix:
+
+
+FLAW 5:
+link:
+description:
+how to fix:
