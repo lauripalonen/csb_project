@@ -1,10 +1,14 @@
 LINK: https://github.com/lauripalonen/csb_project
 installation instructions
 
-FLAW 1:
-link:
-description:
+FLAW 1: Cross Site Request Forgery
+link: TBA
+
+description: 
+The application has enabled a CSRF exempt for the requests considering the voting. This allows requests from external sites to our application, exploiting currently authenticated user. If the user visits a malicious site while logged in to our service, the malicous site can make a request while acting as the user.
+
 how to fix:
+Disable CSRF_exempt tags from the functions handling the requests and include {% csrf_token %} in the template files that introduces POST requests. Modern frameworks tend to handle CSRF attacks well; to enable this security risk in our application we had to specifically allow the CSRF exempt.
 
 
 FLAW 2:
