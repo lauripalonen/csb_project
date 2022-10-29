@@ -2,34 +2,39 @@ LINK: https://github.com/lauripalonen/csb_project
 installation instructions
 
 FLAW 1: Cross Site Request Forgery
-link: TBA
+link: https://github.com/lauripalonen/csb_project/blob/main/csbproject/polls/views.py#L42
 
 description: 
-The application has enabled a CSRF exempt for the requests considering the voting. This allows requests from external sites to our application, exploiting currently authenticated user. If the user visits a malicious site while logged in to our service, the malicous site can make a request while acting as the user.
+The application has enabled a CSRF exempt for the requests considering the voting (). This disables the CSRF token validation for the vote requests. An adversary can then disquise a link making a vote request as something that an authenticated user might be tempted to open while being logged in our service. Without the CSRF token validation our website accepts the malign request and the adversary can make a vote as the authenticated user.
 
 how to fix:
-Disable CSRF_exempt tags from the functions handling the requests and include {% csrf_token %} in the template files that introduces POST requests. Modern frameworks tend to handle CSRF attacks well; to enable this security risk in our application we had to specifically allow the CSRF exempt.
+Disable CSRF_exempt tags from the functions handling the requests and include {% csrf_token %} in the template files that introduce POST requests. Modern frameworks tend to handle CSRF attacks well; to enable this security risk in our application we had to specifically allow the CSRF exempt.
 
 
-FLAW 2:
-link:
-description:
-how to fix:
+FLAW 2: Identification and Authentication Failures
+link: usermgmt/views.py line 23
+
+description: The application uses a custom user model that introduces several faults. It has no password validation, which means that user can register with a weak password, making it easy to steal. Secondly, the passwords are store as plaintext in the database, which means that in case it gets compromised, all the passwords are leaked. 
+how to fix: Use Django's built in authentication utilities. Django has its own User model, which by default encrypts the passwords. In addition, passwords can be validated with validate_password function, and even more validations can be added in addition to the Django's default validations.
 
 
-FLAW 3:
-link:
-description:
-how to fix:
+FLAW 3: Injection
+link: usermgmt/views.py line 36
+
+description: The application accepts a raw input without sanitation to be used as a SQL query. This enables SQL injection attacks, in which an adversary can quite freely read and manipulate the database. 
+
+how to fix: In this case the vulnerability is prevented by using Django's built in User model and authentication utilities, avoiding the use raw sql queries in whole. However, if the custom User model is in use, injections can be prevented with parameterized statements, either by using Django's ORM function: User.objects.get(username=username) or using following query format: User.objects.raw("SELECT * FROM usermgmt_user WHERE username = %s", [username]).
 
 
-FLAW 4:
-link:
-description:
-how to fix:
+FLAW 4: Security Misconfiguration
+link: commit https://github.com/lauripalonen/csb_project/commit/f3e724ff47c69420552e5fa23a4f295d8230d710
+
+description: The application developer accidentally leaked a secret token. The vulnerability was patched by hiding the key as a environment variable, the developer was lazy and did not update they key, leaving it visible in the commit history. An exposed production key enables adversaries to tamper with the production version of the application.   
+
+how to fix: Use secret keys as environment variables from the start. If a key gets leaked, replace it as soon as possible.
 
 
-FLAW 5:
-link:
-description:
-how to fix:
+FLAW 5: Broken Access Control
+link: views.py line 40
+description: On polls page, there is a link that leads to another page which is intended to be only for registered users. However there is no access control present and it is assumed that users navigate to polls page always through login. By browsing straight to the restricted access page's url, an adversary can get access to the page without logging in. 
+how to fix: Introduce access control. Django has built in @login_required decorator that prevents access to a view if user has not logged in. This also requires using Django's own user model, and login functions in the login view. 

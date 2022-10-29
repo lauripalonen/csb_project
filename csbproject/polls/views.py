@@ -5,6 +5,7 @@ from django.views import generic
 from django.utils import timezone
 
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 
 from .models import Choice, Question
 
@@ -35,6 +36,15 @@ class ResultsView(generic.DetailView):
     model = Question
     template_name = 'polls/results.html'
 
+#@login_required(login_url='/login/')
+def vip(request):
+  return render(request, 'polls/vip.html')
+
+# SECURITY FLAW: Cross Site Request Forgery
+# - the exempt decorator makes the website ignore CSRF token checks,
+#   thus making it vulnerable to CSRF attacks
+#
+# FIX: remove the @csrf_exempt decorator
 @csrf_exempt
 def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
