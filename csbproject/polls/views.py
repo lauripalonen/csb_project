@@ -3,9 +3,8 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
-
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.decorators import login_required
+# from django.contrib.auth.decorators import login_required
 
 from .models import Choice, Question
 
@@ -36,11 +35,18 @@ class ResultsView(generic.DetailView):
     model = Question
     template_name = 'polls/results.html'
 
-#@login_required(login_url='/login/')
+# SECURITY FLAW: Broken Access Control
+# - page that is designed to be visible for logged in users
+#   can be accessed with direct URL
+#
+# FIX: add access control with the decorator below (remember to import it first):
+# - use the login_required decorator below
+# - use Django's built in authentication models in usermgmt/views.py
+# @login_required(login_url='/login/')
 def vip(request):
   return render(request, 'polls/vip.html')
 
-# SECURITY FLAW: Cross Site Request Forgery
+# SECURITY FLAW I: Cross Site Request Forgery
 # - the exempt decorator makes the website ignore CSRF token checks,
 #   thus making it vulnerable to CSRF attacks
 #
