@@ -3,7 +3,7 @@
 Installation instructions: This application was created by following the recommended starter website tutorial: https://docs.djangoproject.com/en/3.1/intro/tutorial01/ . If you do not have Python and Django installed, see instructions here: https://cybersecuritybase.mooc.fi/installation-guide . To run the application, run “python3 manage.py runserver” in the directory that contains manage.py file (csb_project/csb_project/). The application is running by default at http://127.0.0.1:8000.
 
 FLAW 1: Cross Site Request Forgery
-link: https://github.com/lauripalonen/csb_project/blob/main/csbproject/polls/views.py#L42
+link: https://github.com/lauripalonen/csb_project/blob/45d8a68af7031d4384131aa28dfee8eca6813422/csbproject/polls/views.py#L49
 
 description: 
 The application has enabled a CSRF exempt for the requests considering the voting. This disables the CSRF token validation for the vote requests. An adversary can disquise a vote request (for example) as a tempting link or a 0x0px fake image, and lure an authenticated user to launch the request. Without the CSRF token validation our website accepts the malign request and the adversary can make a vote as the authenticated user once the user clicks the link or “opens” the image.
@@ -13,15 +13,15 @@ Remove CSRF_exempt decorators and ensure that csrf_tokens ({% csrf_token %}) are
 
 
 FLAW 2: Identification and Authentication Failures
-link: usermgmt/views.py line 23
+link: https://github.com/lauripalonen/csb_project/blob/45d8a68af7031d4384131aa28dfee8eca6813422/csbproject/usermgmt/views.py#L12 and https://github.com/lauripalonen/csb_project/blob/45d8a68af7031d4384131aa28dfee8eca6813422/csbproject/usermgmt/views.py#L38
 
 description: The application uses a custom User model that introduces several faults. Firstly, the application has no password validation, which means that  user can register with a weak password, making it easy to figure out with bruteforce methods. Secondly, the passwords are store as plaintext in the database, which means that in case it gets compromised, all the passwords are leaked as is, making it trivial for an adversary to exploit them.
 
-how to fix: Use Django's built in authentication utilities. Django has its own User model, which by default encrypts the passwords, so they are never stored in the database as plaintext. The password validation can be handled with Django’s validate_password() function. Django has a few default validation options for the passwords and they can be extended further with custom validations if needed. Validators can be found in the settings.py file under the variable AUTH_PASSWORD_VALIDATORS.
+how to fix: Use Django's built in authentication utilities. Django has its own User model, which by default encrypts the passwords, so they are never stored in the database as plaintext. The password validation can be handled with Django’s validate_password() function. Django has a few default validation options for the passwords and they can be extended further with custom validations if needed. Validators can be found in the settings.py file under the variable AUTH_PASSWORD_VALIDATORS. (For fixed version, see https://github.com/lauripalonen/csb_project/blob/45d8a68af7031d4384131aa28dfee8eca6813422/csbproject/usermgmt/views.py#L51)
 
 
 FLAW 3: Injection
-link: usermgmt/views.py line 36
+link: https://github.com/lauripalonen/csb_project/blob/45d8a68af7031d4384131aa28dfee8eca6813422/csbproject/usermgmt/views.py#L31
 
 description: The application accepts a user input without sanitation, which is then used in a SQL query. This enables SQL injection attacks, in which an adversary can freely read and manipulate the database. In this case the adversary can attempt to login with username that includes SQL queries, and tamper the database that way. With right queries, they can for example wipe out the user database.
 
@@ -37,7 +37,7 @@ how to fix: Revoke the leaked token and generate a new one. Use environment vari
 
 
 FLAW 5: Broken Access Control
-link: views.py line 40
+link: https://github.com/lauripalonen/csb_project/blob/45d8a68af7031d4384131aa28dfee8eca6813422/csbproject/polls/views.py#L38
 
 description: On polls page, there is a link that leads to another page which is intended to be only for registered users. However there is no access control present and it is assumed that users navigate to polls page always through login. By browsing directely to the restricted access page's url, an adversary can get access to the page without logging in.
 
