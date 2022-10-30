@@ -4,7 +4,7 @@ This is a project done for University of Helsinki's [Cyber Security course](http
 # Installation
 This application requires Python 3 and Django. Installation instructions can be found here: https://cybersecuritybase.mooc.fi/installation-guide  
 
-To run the application, run command `python3 manage.py runserver` in the `csb_project/csb_project/` directory. By default the application runs in http://127.0.0.1:8000.
+To run the application, run command `python3 manage.py runserver` in the `csb_project/csbproject/` directory. By default the application runs in http://127.0.0.1:8000.
 
 # Security flaws
 
